@@ -40,16 +40,21 @@
 ;       Modified for bent channels by Corrigan Nadon-Nichols, 2005
 ;********************************************************************************
 
-pro gr_corner,maxdis=maxdis, speed=speed, ratio=ratio, time=time, nframes=nframes, corners=corners,folder=folder,usetrfile = usetrfile
+pro gr_corner,maxdis=maxdis, speed=speed, ratio=ratio, time=time, $
+  nframes=nframes, corners=corners,folder=folder,usetrfile = usetrfile, $
+  resolution=resolution,diameter=diameter
 
 
 compile_opt idl2
 ;Set keywords if they haven't already been set
-  if keyword_set(maxdis) then maxdis=maxdis else maxdis=300. ;in the unit of pixel
+  if keyword_set(maxdis) then maxdis=maxdis else maxdis=5. ;in units of sigma
   if keyword_set(speed) then speed=speed else speed=30.
   if keyword_set(ratio) then ratio=ratio else ratio=0.169
   if keyword_set(time) then time=time else time=5.
-  if keyword_set(corners) then corners=corners else corners=read_gdf('middles.gdf')
+  if keyword_set(resolution) then resolution=resolution else resolution = 10.
+  if keyword_set(diameter) then diameter=diameter else diameter=1.57
+  if keyword_set(corners) then corners=corners $ 
+    else corners=read_gdf('middles.gdf')
   if keyword_set(plot_res) then plot_res=plot_res else plot_res=maxdis
 
   if keyword_set(folder) then cd, folder
@@ -64,11 +69,10 @@ compile_opt idl2
   indicator=fltarr(maxdis,time+1)
 
 
-;Fix resolution tag
-resolution = 1.0
-
     thist = fltarr(maxdis)
     tpairs = 0
+
+    corners = corners * resolution * ratio / diameter
 
 
   for file=0.,n_elements(fls) + n_elements(flt)-1. do begin
@@ -87,6 +91,9 @@ resolution = 1.0
 ;    nparticles=float(n_elements(sum[0,*,0]))
 ;    if keyword_set(nframes) then nframes=nframes else nframes=max(sum[5,*])+1.
 ;    print,nframes
+
+    sum[0:1,*] = sum[0:1,*] * resolution * ratio / diameter
+
     print,max(sum[5,*])+1
     nframes=max(sum[5,*])+1.
     print,nframes
@@ -115,7 +122,7 @@ resolution = 1.0
 
     hist=fltarr(maxdis)
     pairs = 0
-    xx=findgen(maxdis)*resolution*ratio  ;in the unit of diameter
+    xx=findgen(maxdis)*ratio / diameter  ;in the unit of diameter
 
     for i=0,nframes do begin
       index.add,list(length=0)
