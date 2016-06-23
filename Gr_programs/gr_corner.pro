@@ -1,19 +1,20 @@
 ;*********************************************************************************
 ; NAME:
-;   c_pairdiff_1D2D_corner
+;   gr_corner_1d
 ;VERSION:
 ;   1.0
 ; PURPOSE:
-;   Calculate the distance-dependent pair diffusion coefficients (both
-;   longitudinal and transverse)counting all pairs in a bent quasi-one-dimensional channel;
+;   Calculate the pair distribution function [ g(r) ] for the corner geometry
+;   from linearized sumdata or trackfiles (subset-sumdata)
 ;CATEGORY:
 ;   Data Processing
 ; CALLING SEQUENCE:
-;   c_pairdiff_1D2D_corner
+;   gr_corner_1d
 ; INPUTS:
-; trshort: The short trajectory files generated from c_trshort_1D2D
+; straightened subsum_sumdata or trackfile
 ;OPTIONAL PARAMETERS:
 ; time, used to calculated short time diffusion coefficient,
+; 
 ;     in the unit of frame.
 ; maxdis, the maximum pair distance counted, in the unit of pixel.
 ; nframes, specify this parameter if you just want to use part of the trajectory.
@@ -55,8 +56,9 @@ compile_opt idl2
   fls=file_search('subset_sumdata*')
   if fls[0] eq '' then fls = !null
 ;  flt = findfile('trshort-6_umdata_*')
-  if keyword_set(usetrfile) then flt=findfile('trshort-6_umdata_*')
+  flt=findfile('trshort-6_umdata_*')
   if flt[0] eq '' then flt = !null
+  if ~keyword_set(usetrfile) then flt=!null
   r2_axis=fltarr(2,maxdis,time+1)
   r2_vert=fltarr(2,maxdis,time+1)
   indicator=fltarr(maxdis,time+1)
@@ -141,6 +143,8 @@ resolution = 1.0
 ;Find the normalized bit
 
 mask[sum[0,*],sum[1,*]] += 1
+
+stop
 maskr = mask[corner:-1,*]
 maskl = mask[0:corner,*]
 O = where(maskl[*,*] eq 1)
