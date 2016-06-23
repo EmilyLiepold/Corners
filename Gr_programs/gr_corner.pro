@@ -51,7 +51,7 @@ compile_opt idl2
   if keyword_set(speed) then speed=speed else speed=30.
   if keyword_set(ratio) then ratio=ratio else ratio=0.169
   if keyword_set(time) then time=time else time=5.
-  if keyword_set(resolution) then resolution=resolution else resolution = 10.
+  if keyword_set(resolution) then resolution=resolution else resolution = 100.
   if keyword_set(diameter) then diameter=diameter else diameter=1.57
   if keyword_set(corners) then corners=corners $ 
     else corners=read_gdf('middles.gdf')
@@ -73,6 +73,7 @@ compile_opt idl2
     tpairs = 0
 
     corners = corners * resolution * ratio / diameter
+    maxdis = maxdis * resolution
 
 
   for file=0.,n_elements(fls) + n_elements(flt)-1. do begin
@@ -165,9 +166,9 @@ norms[*,*,*,0] = 10
 norms[*,*,*,1] = -10
 
 for m = 0,n_elements(O)-1 do begin
-  l = [O[m] mod lmax[0], O[m] / lmax[0]] / resolution
+  l = [O[m] mod lmax[0], O[m] / lmax[0]] ;/ resolution
   for n = 0, n_elements(P)-1 do begin
-    r = [P[n] mod rmax[0], P[n] / rmax[0]] / resolution
+    r = [P[n] mod rmax[0], P[n] / rmax[0]] ;/ resolution
     dis=sqrt((r[0] + corner - l[0] )^2 + (r[1]-l[1])^2)
     dis=fix(abs(dis),type=3)
     if dis le maxdis-1 then begin
