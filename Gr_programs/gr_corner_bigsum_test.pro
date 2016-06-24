@@ -233,9 +233,9 @@ pro gr_corner_bigsum_test,maxdis=maxdis, speed=speed, ratio=ratio, time=time, $
         ;      npar=npar+count_l + count_r
         pairs=pairs+count_l * count_r
         x_l=reform(sum[0,lindices]);/resolution
-        y_l=reform(sum[1,lindices]);/resolution
+;        y_l=reform(sum[1,lindices]);/resolution
         x_r=reform(sum[0,rindices]);/resolution
-        y_r=reform(sum[1,rindices]);
+;        y_r=reform(sum[1,rindices]);
 
 ;        nsample = 10000
 ;
@@ -244,10 +244,10 @@ pro gr_corner_bigsum_test,maxdis=maxdis, speed=speed, ratio=ratio, time=time, $
 
         for i=0,count_l-1 do begin
           for j=0,count_r-1 do begin
-            dis=sqrt((x_r[j]-x_l[i])^2+1 * (y_r[j]-y_l[i])^2)
-            dx = abs(x_r[j] - x_l[i])
-            yr = abs(y_r[j] - midy)
-            yl = abs(y_l[i] - midy)
+;            dis=sqrt((x_r[j]-x_l[i])^2+1 * (y_r[j]-y_l[i])^2)
+            dis = x_r[j] - x_l[i]
+;            yr = abs(y_r[j] - midy)
+;            yl = abs(y_l[i] - midy)
             dis=fix(abs(dis),type=3)
             if dis le maxdis-1 then hist[dis]=hist[dis]+1;(fixnorms[x_l[i],y_l[i],dis] + fixnorms[x_r[j],y_r[j],dis]) / 2
           endfor
@@ -277,10 +277,11 @@ rights = count_r * randomu(Seed,nsample)
 
         for i=0,nsample-1 do begin
           for j=0,nsample-1 do begin
-            dis=sqrt((x_r[rights[j]]-x_l[lefts[i]])^2+0 * (y_r[rights[j]]-y_l[lefts[i]])^2)
+;            dis=sqrt((x_r[rights[j]]-x_l[lefts[i]])^2+0 * (y_r[rights[j]]-y_l[lefts[i]])^2)
             dx = abs(x_r[rights[j]] - x_l[lefts[i]])
-            yr = abs(y_r[rights[j]] - midy)
-            yl = abs(y_l[lefts[i]] - midy)
+            dx = x_r[rights[j]] - x_l[lefts[i]]
+;            yr = abs(y_r[rights[j]] - midy)
+;            yl = abs(y_l[lefts[i]] - midy)
             dis=fix(abs(dis),type=3)
             if dis le maxdis-1 then normhist[dis] += 1    ;(fixnorms[x_l[i],y_l[i],dis] + fixnorms[x_r[j],y_r[j],dis]) / 2
           endfor
