@@ -129,30 +129,30 @@ pro gr_corner_bigsum_test,maxdis=maxdis, speed=speed, ratio=ratio, time=time, $
     pairs = 0
     xx=findgen(maxdis) / resolution;*ratio / diameter  ;in the unit of diameter
 
-    for i=0,nframes do begin
-    index.add,list(length=0)
-      for j=0,1 do begin
-        (index[i]).add,list(length=0)
-      endfor
-    endfor
-
-percent = (n_elements(sum[0,*]) - 1)/100
-w = where(sum[0,*] lt 0,complement=v)
-
-newframe = (sum[2,*] - shift(sum[2,*],0,1))
-for k=0,nframes-1 do begin
-  if k mod 1000 eq 0 then print,k
-  ww = where(sum[2,w[*]] eq k)
-  vv = where(sum[2,v[*]] eq k)
-  index[k,0].add,w[ww]
-  index[k,1].add,v[vv]
-endfor
-stop
-;    for k =0, n_elements(sum[0,*])-1 do begin
-;      if k mod percent eq 0 then print,k / percent,'% indexed!'
-;      if sum[0,k] lt corner then index[sum[2,k],0].add,k else index[sum[2,k],1].add,k
+;    for i=0,nframes do begin
+;    index.add,list(length=0)
+;      for j=0,1 do begin
+;        (index[i]).add,list(length=0)
+;      endfor
 ;    endfor
-    print,'Indexed!'
+
+;percent = (n_elements(sum[0,*]) - 1)/100
+;w = where(sum[0,*] lt 0,complement=v)
+;
+;newframe = (sum[2,*] - shift(sum[2,*],0,1))
+;for k=0,nframes-1 do begin
+;  if k mod 1000 eq 0 then print,k
+;  ww = where(sum[2,w[*]] eq k)
+;  vv = where(sum[2,v[*]] eq k)
+;  index[k,0].add,w[ww]
+;  index[k,1].add,v[vv]
+;endfor
+;;stop
+;;    for k =0, n_elements(sum[0,*])-1 do begin
+;;      if k mod percent eq 0 then print,k / percent,'% indexed!'
+;;      if sum[0,k] lt corner then index[sum[2,k],0].add,k else index[sum[2,k],1].add,k
+;;    endfor
+;    print,'Indexed!'
 
     ;    for k=0,nframes do begin
     ;      w = index[k,0].toarray()
@@ -211,11 +211,16 @@ stop
     ;stop
 
     for fr=0,nframes-1 do begin
+      if fr mod 1000 eq 0 then print,fr
+      w = where(sum[2,*] eq fr)
+      ll = where(sum[0,w[*]] lt 0,complement = rr)
       ;      print,fr
       ;      print,'frame: '+strtrim(fr,0)
       ;      print,nframes
-      lindices = index[fr,0].toarray()
-      rindices = index[fr,1].toarray()
+;      lindices = index[fr,0].toarray()
+;      rindices = index[fr,1].toarray()
+      lindices = w[ll]
+      rindices = w[rr]
       count_l = n_elements(lindices)
       count_r = n_elements(rindices)
       if (n_elements(rindices) gt 0) && (n_elements(lindices) gt 0) then begin
@@ -239,7 +244,7 @@ stop
 
         for i=0,count_l-1 do begin
           for j=0,count_r-1 do begin
-            dis=sqrt((x_r[j]-x_l[i])^2+0 * (y_r[j]-y_l[i])^2)
+            dis=sqrt((x_r[j]-x_l[i])^2+1 * (y_r[j]-y_l[i])^2)
             dx = abs(x_r[j] - x_l[i])
             yr = abs(y_r[j] - midy)
             yl = abs(y_l[i] - midy)
