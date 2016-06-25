@@ -114,19 +114,19 @@ stop
   nf = n_elements(folders)
   cd,current=maindir
 
-;  for i=0,nf-1 do begin
-;    cd,folders[i]+'/gr/'
-;    f = file_search('gr_total')
-;    if f eq '' then continue
-;    
-;    gr = read_gdf(f)
-;    p1 = plot(gr[0,*],gr[1,*],title='Pair Distribution G(r) for pairs across corner, '+ names[i],xtitle='Distance (um)', ytitle='G(r) (unitless)',thick=3,name = names[i],dimensions=[1200,900])
-;    p1.save,names[i] + '.png'
-;    p1.close
-;    
-;    
-;    
-;  endfor
+  for i=0,nf-1 do begin
+    cd,folders[i]+'/gr/'
+    f = file_search('gr_total')
+    if f eq '' then continue
+    
+    gr = read_gdf(f)
+    p1 = plot(gr[0,*],gr[1,*],title='Pair Distribution G(r) for pairs across corner, '+ names[i],xtitle='Distance (um)', ytitle='G(r) (unitless)',thick=3,name = names[i],dimensions=[1200,900])
+    p1.save,names[i] + '.png'
+    p1.close
+    
+    
+    
+  endfor
 
 ;Hack to fix diameters
 diameter = 1.57
@@ -140,14 +140,14 @@ colors = ['black','red','blue','green','purple','orange','yellow','magenta','cya
 for i=0,n_elements(groups)-1 do begin
   set = groups[i]
   plots = list()
-  gr = read_gdf(folders[set[0]] + '/gr/gr_1d_total')
+  gr = read_gdf(folders[set[0]] + '/gr/gr_total')
   plots.add,plot(gr[0,*]/(diameter),gr[1,*],title='Pair Distribution G(r) for pairs across corner, '+ groupnames[i],xtitle='Distance (diameters)', ytitle='G(r) (unitless)',thick=3,name = names[set[0]],dimensions=[1200,900], color = colors[0])
   for j=1,n_elements(set)-1 do begin
-    gr = read_gdf(folders[set[j]] + '/gr/gr_1d_total')
+    gr = read_gdf(folders[set[j]] + '/gr/gr_total')
     plots.add,plot(gr[0,*]/(diameter),gr[1,*],thick=3,name = names[set[j]],dimensions=[1200,900],overplot=1,color=colors[j])
   endfor
   leg = legend(target = plots[*])
-  plots[0].save,groupnames[i]+'_1d.png'
+  plots[0].save,groupnames[i]+'.png'
   plots[0].close
 endfor
 

@@ -122,111 +122,25 @@ pro gr_corner_revision,maxdis=maxdis, speed=speed, ratio=ratio, time=time, $
 
     mask = make_array(maxx+1,maxy+1,/boolean)
 
-
-
-    ;print,file_id
-;        if(strmid(file_id,0,1) eq '_') then file_id=strmid(file_id,1,2)
-;        chan=file_id MOD 10
-;        m=(file_id-chan)/10
-;        print,chan,m
-;    corner=corners[m,chan]
-    
-    ;Create list indices with frame number and position(l,r)
-;    index = list()
-
     hist=fltarr(maxdis)
     dis_list = list(length=0)
     normhist=fltarr(maxdis)
     pairs = 0
     xx=findgen(maxdis) / resolution;*ratio / diameter  ;in the unit of diameter
 
-;    for i=0,nframes do begin
-;        index.add,list(length=0)
-;    endfor
 
-    ;percent = (n_elements(sum[0,*]) - 1)/100
-    ;w = where(sum[0,*] lt 0,complement=v)
-    ;
     newframe = (sum[2,*] - shift(sum[2,*],0,1))
     ww = where(newframe[*] eq 1) 
     newframelist = [0.,ww]
-;    lastframelist = (shift(newframelist,-1) - 1)[0:-2]
-;    lastframelist = [lastframelist,n_elements(sum[2,*])]
     n = intarr(nframes)
-    stop
     for k=0,nframes-2 do begin
       n[k] = newframelist[k+1]-newframelist[k]
-;      index_line = indgen(n) + newframelist[k]
-;      index[k].add,index_line
     endfor
-    
-;    stop
-    ;;stop
-    ;;    for k =0, n_elements(sum[0,*])-1 do begin
-    ;;      if k mod percent eq 0 then print,k / percent,'% indexed!'
-    ;;      if sum[0,k] lt corner then index[sum[2,k],0].add,k else index[sum[2,k],1].add,k
-    ;;    endfor
-    ;    print,'Indexed!'
 
-    ;    for k=0,nframes do begin
-    ;      w = index[k,0].toarray()
-    ;      v = index[k,1].toarray()
-    ;      plot,sum[0,w],sum[1,w],psym=3,xrange=[minx,maxx],yrange=[miny,maxy],symsize=5, color='FFFFFF'x
-    ;      oplot,sum[0,v],sum[1,v],psym=3,symsize=5, color='0000FF'x
-    ;      wait, 0.01
-    ;    endfor
-    midy = mean(sum[1,*])
-    ;    H = 6 ;Set an actual H!
-    ;    stop
 
-    ;Find the normalized bit
-
-    ;    mask[sum[0,*],sum[1,*]] += 1
-    ;
-    ;    stop
-    ;    maskr = mask[corner:-1,*]
-    ;    maskl = mask[0:corner,*]
-    ;    O = where(maskl[*,*] eq 1)
-    ;    P = where(maskr[*,*] eq 1)
-    ;    normhist=fltarr(maxdis)
-    ;    lmax = [n_elements(maskl[*,0]), n_elements(maskl[0,*])]
-    ;    rmax = [n_elements(maskr[*,0]), n_elements(maskr[0,*])]
-    ;
-    ;    norms = make_array(n_elements(mask[*,0]),n_elements(mask[0,*]),maxdis,2)
-    ;    norms[*,*,*,0] = 10
-    ;    norms[*,*,*,1] = -10
-    ;
-    ;    for m = 0,n_elements(O)-1 do begin
-    ;      l = [O[m] mod lmax[0], O[m] / lmax[0]] ;/ resolution
-    ;      for n = 0, n_elements(P)-1 do begin
-    ;        r = [P[n] mod rmax[0], P[n] / rmax[0]] ;/ resolution
-    ;        dis=sqrt((r[0] + corner - l[0] )^2 + (r[1]-l[1])^2)
-    ;        dis=fix(abs(dis),type=3)
-    ;        if dis le maxdis-1 then begin
-    ;          thetalr = atan(r[1]-l[1],r[0]+corner-l[0])
-    ;          thetarl = -thetalr
-    ;          ;      print,theta
-    ;          if thetalr lt norms[l[0],l[1],dis,0] then norms[l[0],l[1],dis,0] = thetalr
-    ;          if thetalr gt norms[l[0],l[1],dis,1] then norms[l[0],l[1],dis,1] = thetalr
-    ;          if thetarl lt norms[r[0]+corner,r[1],dis,0] then norms[r[0]+corner,r[1],dis,0] = thetarl
-    ;          if thetarl gt norms[r[0]+corner,r[1],dis,1] then norms[r[0]+corner,r[1],dis,1] = thetarl
-    ;        endif
-    ;
-    ;
-    ;        ;    if dis le maxdis-1 then normhist[dis]=normhist[dis]+1
-    ;      endfor
-    ;    endfor
-
-    ;    w = where(norms[*] eq -10)
-    ;    norms[w] = 0
-    ;    w = where(norms[*] eq 10)
-    ;    norms[w] = 0
-    ;    fixnorms = (norms[*,*,*,1] - norms[*,*,*,0]) / (2 * !Pi)
-    ;stop
 
     for fr=0,nframes-2 do begin
       if fr mod 1000 eq 0 then print,fr
-;      w = index[fr].toarray()
       w = indgen(n[fr])+newframelist[fr]
       ll = where(sum[0,w[*]] lt 0,complement = rr)
       lindices = w[ll]
@@ -242,88 +156,68 @@ pro gr_corner_revision,maxdis=maxdis, speed=speed, ratio=ratio, time=time, $
         diss =  fix(x_r_k#x_r - x_l#x_l_k)
         diss = [diss[*],0]
         dish = histogram(diss)
-        hist = hist +  dish
-
-;MAYBE I CAN REPLACE THIS?
-;        for i=0,count_l-1 do begin
-;          for j=0,count_r-1 do begin
-;            ;            dis=sqrt((x_r[j]-x_l[i])^2+1 * (y_r[j]-y_l[i])^2)
-;            dis = x_r[j] - x_l[i]
-;            ;            yr = abs(y_r[j] - midy)
-;            ;            yl = abs(y_l[i] - midy)
-;            dis=fix(abs(dis),type=3)
-;            if dis le maxdis-1 then hist[dis]=hist[dis]+1;(fixnorms[x_l[i],y_l[i],dis] + fixnorms[x_r[j],y_r[j],dis]) / 2
-;          endfor
-;        endfor
+        
+        hist[0] = hist[*] + dish[*]
 
       endif
 
     endfor  ;end of fr loop
 
-    stop
 
 
-    lindices = where(sum[0,*] lt corner,complement = rindices)
+    lindices = where(sum[0,*] lt 0,complement = rindices)
     count_l = n_elements(lindices)
     count_r = n_elements(rindices)
-    if (n_elements(rindices) gt 0) && (n_elements(lindices) gt 0) then begin
-      ;        pairs=pairs+count_l * count_r
-      x_l=reform(sum[0,lindices]);/resolution
-      y_l=reform(sum[1,lindices]);/resolution
-      x_r=reform(sum[0,rindices]);/resolution
-      y_r=reform(sum[1,rindices]);
+    nsample = 10000
+    lefts = count_l * randomu(Seed,nsample)
+    rights = count_r * randomu(Seed,nsample)
+      x_l=reform(sum[0,lindices[lefts]]);/resolution
+      x_r=reform(sum[0,rindices[rights]]);/resolution
 
-      nsample = 10000
+      
+  for i=0,nsample-1 do begin
+  
+    ndiss = x_r - x_l[i]
+    ndiss = fix([ndiss,0])
+    ndish = histogram(ndiss)
+    normhist[0] = normhist[*] + ndish[*] 
+  
+    
+  endfor
+  
+  hist = hist[1:-1]
+  normhist = normhist[1:-1]
+  xx = xx[1:-1]
+  
+  ratio = hist / (normhist + 0.0)
 
-      lefts = count_l * randomu(Seed,nsample)
-      rights = count_r * randomu(Seed,nsample)
-
-      for i=0,nsample-1 do begin
-        for j=0,nsample-1 do begin
-          ;            dis=sqrt((x_r[rights[j]]-x_l[lefts[i]])^2+0 * (y_r[rights[j]]-y_l[lefts[i]])^2)
-;          dis = abs(x_r[rights[j]] - x_l[lefts[i]])
-          dis = x_r[rights[j]] - x_l[lefts[i]]
-          ;            yr = abs(y_r[rights[j]] - midy)
-          ;            yl = abs(y_l[lefts[i]] - midy)
-          dis=fix(abs(dis),type=3)
-          if dis le maxdis-1 then normhist[dis] += 1    ;(fixnorms[x_l[i],y_l[i],dis] + fixnorms[x_r[j],y_r[j],dis]) / 2
-        endfor
-      endfor
-
-    endif
-
-
-    stop
-    ;    stop
-
-
-
-    histnorm = mean(hist)
+    histnorm = mean(ratio)
+    ratio = ratio / histnorm
     print,'the mean value on the histogram is:'
     print,histnorm
-    print,count_l,count_r
+;    print,count_l,count_r
     print,'There are '+strtrim(pairs,2) + ' pairs'
     if histnorm gt 0 then begin
-      plot,xx,hist/histnorm
+      p = plot(xx,ratio)
 
-      gr=[transpose(xx),transpose(hist/histnorm)]
-      write_gdf,gr,'gr/gr_' + file_id
+      gr=[transpose(xx),transpose(ratio/histnorm)]
+;      write_gdf,gr,'gr/gr_' + file_id
     endif
-    thist += hist
-    tpairs += pairs
-    ;stop
+;    thist += hist
+;    tpairs += pairs
+;    ;stop
 
   endfor  ;end of file loop
 
-  thistnorm = mean(thist)
-
-  print,'the mean value on the histogram is:'
-  print,thistnorm
-
-  print,'There are '+strtrim(tpairs,2) + ' pairs'
-  plot,xx,thist/thistnorm
-
-  gr=[transpose(xx),transpose(thist/thistnorm)]
+;  thistnorm = mean(thist)
+;
+;  print,'the mean value on the histogram is:'
+;  print,thistnorm
+;
+;  print,'There are '+strtrim(tpairs,2) + ' pairs'
+;  plot,xx,thist/thistnorm
+;;
+;  gr=[transpose(xx),transpose(thist/thistnorm)]
 
   write_gdf,gr,'gr/gr_total'
 

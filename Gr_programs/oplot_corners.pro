@@ -43,23 +43,8 @@ frame_track = 0
   k = image(hist_2d(bigsum[0,*],bigsum[1,*]))
 
 
-  stop
+;  stop
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+write_gdf,bigsum,'sumdata_collection'
 
 end
