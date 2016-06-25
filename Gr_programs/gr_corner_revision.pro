@@ -200,7 +200,7 @@ pro gr_corner_revision,maxdis=maxdis, speed=speed, ratio=ratio, time=time, $
     if histnorm gt 0 then begin
       p = plot(xx,ratio)
 
-      gr=[transpose(xx),transpose(ratio/histnorm)]
+      gr=[transpose(xx),transpose(ratio)]
 ;      write_gdf,gr,'gr/gr_' + file_id
     endif
 ;    thist += hist
