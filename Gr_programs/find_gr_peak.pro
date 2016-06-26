@@ -21,13 +21,23 @@ meanval = mean(count)
 stddevval = stddev(count)
 maxval = max(count)
 peak = where(count[*] eq maxval) + (nsteps / 2)
+peak_sigma = (maxval - meanval)/stddevval
+
+sigmas = (count - meanval)/stddevval
+
+w = where(sigmas[*] gt peak_sigma - 0.5 )
+
+
+
 
 print,'The mean value in the width was ',meanval,' with a standard deviation ',$
   stddevval,'.'
 print,'The peak at ', data[0,peak],' had a value of ',maxval,' with sigma=',$
-  (maxval - meanval)/stddevval,'.'
+  peak_sigma,'.'
 
-return, peak
+;stop
+
+return, [peak,w[0],w[-1]]
 
 
 
