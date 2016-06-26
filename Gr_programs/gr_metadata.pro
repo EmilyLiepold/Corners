@@ -58,6 +58,7 @@ pro place_gr_metadata
     
 for i=0,n_elements(folders) -1 do begin
   cd,folders[i]
+  print,folders[i]
   line = reform(vals[*,i])
   write_gdf,line,'gr_metadata'
   
