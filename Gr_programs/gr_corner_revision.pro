@@ -189,7 +189,7 @@ pro gr_corner_revision,maxdis=maxdis, speed=speed, ratio=ratio, time=time, $
   normhist = normhist[1:-1]
   xx = xx[1:-1]
   
-  ratio = hist / (normhist + 0.0)
+  ratio = hist / (normhist + 1.0)
 
     histnorm = mean(ratio)
     ratio = ratio / histnorm

@@ -21,11 +21,15 @@ meanval = mean(count)
 stddevval = stddev(count)
 maxval = max(count)
 peak = where(count[*] eq maxval) + (nsteps / 2)
+if n_elements(peak) gt 1 then peak = mean(peak)
 peak_sigma = (maxval - meanval)/stddevval
 
 sigmas = (count - meanval)/stddevval
 
-w = where(sigmas[*] gt peak_sigma - 0.5 )
+w = where(sigmas[*] gt peak_sigma * 0.5 )
+v = where(w[*] gt peak,complement = u)
+righterr = mean(v)
+lefterr = mean(u)
 
 
 
@@ -37,7 +41,7 @@ print,'The peak at ', data[0,peak],' had a value of ',maxval,' with sigma=',$
 
 ;stop
 
-return, [peak,w[0],w[-1]]
+return, [peak,w[lefterr],w[righterr]]
 
 
 

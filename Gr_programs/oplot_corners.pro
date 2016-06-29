@@ -27,6 +27,10 @@ frame_track = 0
     sum[0,*] -= corner
     midy = mean(sum[1,*])
     sum[1,*] -= midy
+    if file gt n_elements(fls) -1 then begin
+      sum = sum[*,*,0]
+      sum = [sum,sum]
+    endif
     nf = max(sum[5,*])
     sum[5,*] += frame_track
     frame_track += nf
